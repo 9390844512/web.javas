@@ -1,185 +1,118 @@
-// ================= TASK 1 =================
-function calculateDiscount(product, price) {
-  let finalPrice = price > 1000 ? price * 0.8 : price * 0.9;
-  console.log(`Product: ${product}`);
-  console.log(`Final Price: ${finalPrice}`);
-  return finalPrice;
-}
-calculateDiscount("Shoes", 2000);
 
+//Task 1: E-commerce Cart System
 
-// ================= TASK 2 =================
-function payment(amount) {
-  console.log(`Payment of ${amount} successful`);
-}
-
-function orderSuccess() {
-  console.log("Order delivered");
-}
-
-function placeOrder(callback) {
-  console.log("Order placed");
-  callback(500);
-  orderSuccess();
-}
-placeOrder(payment);
-
-
-// ================= TASK 3 =================
-let employees = [
-  { name: "Navi", salary: 50000 },
-  { name: "John", salary: 70000 }
+let cart1 = [
+{name: "Shirt", price: 500},
+{name: "Shoes", price: 1500}
 ];
 
-for (let emp of employees) {
-  if (emp.salary > 60000) {
-    console.log(`${emp.name}: High Salary`);
-  } else {
-    console.log(`${emp.name}: Normal Salary`);
-  }
-}
+let cart2 = [
+{name: "Watch", price: 2000}
+];
+
+let cart = [...cart1, ...cart2];
+cart.push({name: "Cap", price: 300});
+cart.pop();
+let total = cart.reduce((sum, item) => sum + item.price, 0);
+console.log("Total:", total);
 
 
-// ================= TASK 4 =================
-let correctPassword = "1234";
-let attempts = 0;
+//Task 2: User Profile Management
 
-while (attempts < 3) {
-  attempts++;
-  console.log(`Attempt ${attempts}`);
-
-  let enteredPassword = attempts === 3 ? "1234" : "wrong";
-
-  if (enteredPassword === correctPassword) {
-    console.log("Login success");
-    break;
-  }
-}
-
-
-// ================= TASK 5 =================
-function* offers() {
-  yield "10% OFF";
-  yield "20% OFF";
-  yield "Free Delivery";
-  yield "Cashback";
-}
-
-let offerGen = offers();
-console.log(offerGen.next().value);
-console.log(offerGen.next().value);
-console.log(offerGen.next().value);
-console.log(offerGen.next().value);
-
-
-// ================= TASK 6 =================
-let cart = [100, 200, 300, 400];
-let total = 0;
-
-for (let price of cart) {
-  total += price;
-}
-console.log("Total Bill:", total);
-
-
-// ================= TASK 7 =================
 let user = {
-  name: "Navi",
-  role: "Developer",
-  location: "India"
+name: "Naveen",
+role: "Trainee",
+salary: 20000
 };
 
-for (let key in user) {
-  console.log(`${key} : ${user[key]}`);
+let update = {
+role: "Developer",
+salary: 50000
+};
+
+let updatedUser = { ...user, ...update };
+let { name, role, salary } = updatedUser;
+console.log(`${name} is now a ${role} earning ${salary}`);
+
+// Task 3: Team Score System
+
+function teamScore(teamName, ...scores) {
+console.log("Team:", teamName);
+console.log("Scores:", scores);
+let totalScore = scores.reduce((sum, s) => sum + s, 0);
+let highestScore = Math.max(...scores);
+console.log("Total:", totalScore);
+console.log("Highest:", highestScore);
+}
+teamScore("Warriors", 50, 60, 70);
+
+// Task 4: Nested Data Extraction
+
+let apiData = {
+user: {
+name: "Naveen",
+address: {
+city: "Bangalore",
+pincode: 560001
+}
+}
+};
+
+let { user: { name: userName, address: { city, pincode } } } = apiData;
+console.log(`${userName} lives in ${city} - ${pincode}`);
+
+// Task 5: Array Dashboard
+
+let users = ["A", "B", "C", "D", "E"];
+users.splice(2, 2, "X", "Y");
+let firstThree = users.slice(0, 3);
+let hasB = users.includes("B");
+let indexE = users.indexOf("E");
+console.log(firstThree, hasB, indexE);
+
+// Task 6: Data Cleaning Tool
+let messyData = [1, 2, [3, 4, [5]], null, undefined, "hello"];
+let cleanData = messyData.flat(Infinity).filter(item => item != null);
+console.log(cleanData);
+
+// Task 7: Sorting Bug Fix
+let prices = [1000, 200, 50, 5000];
+prices.sort((a, b) => a - b);
+console.log(prices);
+// Default sort fails because it treats numbers as strings
+
+// Task 8: Analytics Report Generator
+let orders = [
+{id:1, amount:100},
+{id:2, amount:200},
+{id:3, amount:300}
+];
+let totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+let avg = totalRevenue / orders.length;
+console.log("Total:", totalRevenue, "Average:", avg);
+
+// Task 9: Inventory System
+let inventory = ["Pen", "Book"];
+inventory.push("Pencil");
+inventory.pop();
+
+let index = inventory.indexOf("Book");
+if (index !== -1) {
+inventory.splice(index, 1, "Notebook");
 }
 
+console.log(inventory.includes("Pen"));
 
-// ================= TASK 8 =================
-function createPhone() {
-  return "Phone";
-}
-function createBattery() {
-  return "Battery";
-}
-function createCharger() {
-  return "Charger";
-}
+let mergedInventory = [...inventory, "Marker", "Eraser"];
+console.log(mergedInventory);
 
-function createOrder() {
-  return `${createPhone()} + ${createBattery()} + ${createCharger()}`;
-}
-console.log("Your Order:", createOrder());
-
-
-// ================= TASK 9 =================
-function collegeForm(name, department = "Not Assigned") {
-  console.log(`Name: ${name}`);
-  console.log(`Department: ${department}`);
-}
-collegeForm("Navi");
-
-
-// ================= TASK 10 =================
-function emi(principal) {
-  return function(rate) {
-    return function(time) {
-      return (principal * rate * time) / 100;
-    };
-  };
-}
-console.log("EMI:", emi(10000)(2)(12));
-
-
-// ================= TASK 11 =================
-for (let i = 1; i <= 10; i++) {
-  console.log(`${i} → ${i % 2 === 0 ? "Even" : "Odd"}`);
+// Task 10: Interview Level Challenge
+function processData(...data) {
+return data
+.flat(Infinity)
+.filter((v, i, arr) => arr.indexOf(v) === i)
+.sort((a, b) => a - b);
 }
 
+console.log(processData(1,2,[3,4],[5,[6]]));
 
-// ================= TASK 12 =================
-if (true) {
-  var a = 10;
-  let b = 20;
-  const c = 30;
-}
-
-console.log(a); // works
-// console.log(b); // error
-// console.log(c); // error
-
-
-// ================= TASK 13 =================
-(function() {
-  console.log("🔥 Flash Sale: 50% OFF on Shirts");
-})();
-
-
-// ================= TASK 14 =================
-function marks(a, b, c) {
-  let totalMarks = a + b + c;
-  let average = totalMarks / 3;
-
-  console.log("Total:", totalMarks);
-  console.log("Average:", average);
-
-  return { totalMarks, average };
-}
-marks(80, 90, 70);
-
-
-// ================= TASK 15 =================
-function* retryOffers() {
-  yield "10% OFF";
-  yield "20% OFF";
-  yield "Free Delivery";
-}
-
-let retry = retryOffers();
-let result = retry.next();
-
-while (!result.done) {
-  console.log(result.value);
-  result = retry.next();
-}
-
-console.log("All offers expired");

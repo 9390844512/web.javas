@@ -1,97 +1,108 @@
+let allProducts = [];
+let filteredProducts = [];
 
+// Fetch Data
+async function fetchData() {
+  try {
+    const res = await fetch("https://fakestoreapi.com/products");
+    const data = await res.json();
 
-//  Task 1: Order System (setTimeout)
+    allProducts = data;
+    filteredProducts = data;
 
-console.log("Order placed");
-
-setTimeout(() => {
-  console.log("Preparing food");
-}, 2000);
-
-setTimeout(() => {
-  console.log("Food ready");
-}, 4000);
-
-setTimeout(() => {
-  console.log("Delivered");
-}, 5000);
-
-
-
-
-//  Task 2: Digital Clock (setInterval)
-
-let count = 0;
-
-const clock = setInterval(() => {
-  const now = new Date();
-  console.log("Time:", now.toLocaleTimeString());
-  count++;
-
-  if (count === 10) {
-    clearInterval(clock);
-    console.log("Clock stopped");
+    document.getElementById("loader").style.display = "none";
+    renderProducts();
+  } catch (err) {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("error").innerText = "Error loading data";
   }
-}, 1000);
-
-
-
-//  Task 3: Callback Hell Simulation
-
-function loginUser(callback) {
-  setTimeout(() => {
-    console.log("User Logged In");
-    callback();
-  }, 1000);
 }
 
-function getUserData(callback) {
-  setTimeout(() => {
-    console.log("User Data Fetched");
-    callback();
-  }, 1000);
-}
+// Render Products
+function renderProducts() {
+  const container = document.getElementById("products");
+  container.innerHTML = "";
 
-function getUserPosts(callback) {
-  setTimeout(() => {
-    console.log("User Posts Fetched");
-  }, 1000);
-}
+  filteredProducts.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-// Execute Callback Flow
-loginUser(() => {
-  getUserData(() => {
-    getUserPosts();
+    card.innerHTML = `
+      <img src="${p.image}">
+      <h4>${p.title.substring(0,20)}</h4>
+      <p>${p.description.substring(0,60)}...</p>
+      <button class="price-btn">$${p.price}</button>
+      <button class="view-btn" data-id="${p.id}">View More</button>
+    `;
+
+    container.appendChild(card);
   });
+}
+
+// Search Filter
+document.getElementById("search").addEventListener("input", e => {
+  const value = e.target.value.toLowerCase();
+
+  filteredProducts = allProducts.filter(p =>
+    p.title.toLowerCase().includes(value)
+  );
+
+  applyCategory();
 });
 
+// Category Filter
+document.getElementById("category").addEventListener("change", applyCategory);
 
+function applyCategory() {
+  const cat = document.getElementById("category").value;
+  const searchVal = document.getElementById("search").value.toLowerCase();
 
-//  Task 4: Fake API Promise
+  let temp = allProducts.filter(p =>
+    p.title.toLowerCase().includes(searchVal)
+  );
 
-function getProducts() {
-  return new Promise((resolve, reject) => {
-    const success = true; // change to false to test error
+  if (cat !== "all") {
+    temp = temp.filter(p => p.category === cat);
+  }
 
-    setTimeout(() => {
-      if (success) {
-        resolve(["Laptop", "Phone", "Tablet"]);
-      } else {
-        reject("API Failed");
-      }
-    }, 2000);
-  });
+  filteredProducts = temp;
+  renderProducts();
 }
 
-// Execute Promise
-getProducts()
-  .then((products) => {
-    console.log("Products:", products);
-  })
-  .catch((error) => {
-    console.error(error);
-  })
-  .finally(() => {
-    console.log("Request completed");
-  });
+// Sort Price
+document.getElementById("lowSort").addEventListener("click", () => {
+  filteredProducts.sort((a,b) => a.price - b.price);
+  renderProducts();
+});
 
+document.getElementById("highSort").addEventListener("click", () => {
+  filteredProducts.sort((a,b) => b.price - a.price);
+  renderProducts();
+});
+
+// View Details (Event Delegation)
+document.getElementById("products").addEventListener("click", e => {
+  if (e.target.classList.contains("view-btn")) {
+    const id = e.target.getAttribute("data-id");
+    viewDetails(id);
+  }
+});
+
+function viewDetails(id) {
+  const p = allProducts.find(x => x.id == id);
+
+  document.getElementById("modal-title").innerText = p.title;
+  document.getElementById("modal-img").src = p.image;
+  document.getElementById("modal-desc").innerText = p.description;
+  document.getElementById("modal-price").innerText = "$" + p.price;
+
+  document.getElementById("modal").style.display = "block";
+}
+
+// Close Modal
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("modal").style.display = "none";
+});
+
+// Init
+fetchData();
